@@ -172,3 +172,4 @@ async def handle_daily(message: Message, qb: QuestionBank):
         "📢 రోజూ 10 ప్రశ్నలు చానల్ లో స్వయంచాలకంగా ప్రసారం చేయబడతాయి!"
     )
     await message.answer(text, parse_mode="Markdown")
+

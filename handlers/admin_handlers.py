@@ -139,3 +139,4 @@ async def handle_resume(message: Message):
 
     await set_setting("is_paused", "0")
     await message.answer("▶️ Automatic quiz posting has been resumed.")
+

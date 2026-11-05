@@ -49,3 +49,4 @@ def test_format_poll_payload():
         assert len(opt) <= 100
     assert correct_idx == q["correct_option_id"]
     assert len(explanation) <= 200
+

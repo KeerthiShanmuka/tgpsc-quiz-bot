@@ -227,3 +227,4 @@ def format_poll_payload(q: Dict[str, Any]) -> Tuple[str, List[str], int, str]:
         explanation_text = explanation_text[:197] + "..."
 
     return question_text, options, answer_idx, explanation_text
+

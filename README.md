@@ -6,7 +6,12 @@ An autonomous, feature-rich Telegram Quiz Bot built with **Python 3.11**, **aiog
 
 ## 🌟 Key Features
 
-1. **2,000 Syllabus-Verified Telangana Questions (`TG0001` - `TG2000`)**
+1. **2,000 High-Difficulty Competitive Standard Questions (`TG0001` - `TG2000`)**
+   - **TGPSC Group-1, Group-2, and Police SI standard** multi-layered questions:
+     - 🔍 **Statement Analysis (ప్రకటనల విశ్లేషణ):** "1 మాత్రమే సరైనది", "2 మాత్రమే సరైనది", "1 మరియు 2 రెండూ సరైనవి", "రెండూ కావు"
+     - ⚖️ **Assertion & Reason (ప్రతిపాదన & కారణం):** Evaluating causal relationships between facts and historical/scientific developments
+     - 🧩 **Match the Following with Grid Codes (జాబితాల జతపరచడం):** Multi-concept matrix matches (e.g., `A-3, B-4, C-1, D-2`)
+     - ❌ **Incorrect / Correct Pair Identification (సరికాని జతల గుర్తింపు):** Eliminating false combinations
    - Strictly curated across 14 official categories.
    - 4 multiple-choice options with exactly one correct answer.
    - Rich explanations in Telugu adhering to Telegram's 200-character poll explanation limit.

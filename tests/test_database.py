@@ -66,3 +66,4 @@ async def test_database_operations(tmp_path):
     await set_setting("is_paused", "1", db_path=test_db)
     val = await get_setting("is_paused", default="0", db_path=test_db)
     assert val == "1"
+

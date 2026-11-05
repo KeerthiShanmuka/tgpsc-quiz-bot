@@ -328,3 +328,4 @@ async def set_setting(key: str, value: str, db_path: str = DB_PATH) -> None:
             (key, value)
         )
         await db.commit()
+

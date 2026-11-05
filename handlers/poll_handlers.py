@@ -48,3 +48,4 @@ async def handle_poll_answer(poll_answer: PollAnswer):
 
     except Exception as e:
         log.exception("Error processing poll answer: %s", e)
+
