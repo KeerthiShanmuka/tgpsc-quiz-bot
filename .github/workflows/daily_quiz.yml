@@ -62,8 +62,8 @@ jobs:
       - name: Run quiz publisher
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
-          TARGET_CHAT_ID: ${{ secrets.CHANNEL_ID }}
+          CHANNEL_ID: ${{ secrets.CHANNEL_ID || secrets.TARGET_CHAT_ID }}
+          TARGET_CHAT_ID: ${{ secrets.TARGET_CHAT_ID || secrets.CHANNEL_ID }}
         run: |
           EXTRA_ARGS=""
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
