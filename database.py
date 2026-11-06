@@ -60,9 +60,14 @@ CREATE TABLE IF NOT EXISTS settings (
 
 
 async def init_db(db_path: str = DB_PATH) -> None:
-    """Initialize database and schema."""
+    """Initialize database and schema with auto-migrations."""
     async with aiosqlite.connect(db_path) as db:
         await db.executescript(SCHEMA)
+        # Check and migrate columns if necessary
+        async with db.execute("PRAGMA table_info(posted_questions)") as cursor:
+            cols = [row[1] for row in await cursor.fetchall()]
+            if "poll_id" not in cols:
+                await db.execute("ALTER TABLE posted_questions ADD COLUMN poll_id TEXT")
         await db.commit()
     log.info("Database initialized successfully at %s", db_path)
 
