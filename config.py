@@ -13,12 +13,14 @@ TARGET_CHAT_ID = (
     or "@dealstimeknow"
 ).strip()
 
-# Admin IDs (comma-separated integers)
-ADMIN_IDS = {
-    int(x.strip())
-    for x in os.getenv("ADMIN_IDS", "").split(",")
-    if x.strip().isdigit()
-}
+import re
+
+# Admin IDs (comma-separated integers, handles prefixes like PA)
+ADMIN_IDS = set()
+for item in os.getenv("ADMIN_IDS", "").split(","):
+    digits = re.sub(r"\D", "", item.strip())
+    if digits:
+        ADMIN_IDS.add(int(digits))
 
 # Timezone (Default: Asia/Kolkata)
 TZ_NAME = os.getenv("TIMEZONE", "Asia/Kolkata")
