@@ -179,50 +179,70 @@ class QuestionBank:
 
 def format_poll_payload(q: Dict[str, Any]) -> Tuple[str, List[str], int, str]:
     """
-    Format question into Telegram Poll payload ensuring limits:
+    Format question into native Telegram Poll payload adhering strictly to official limits:
     - question <= 300 chars
     - option <= 100 chars
     - explanation <= 200 chars
+    - Exactly 4 options with A., B., C., D. labels
     """
-    # Category tag and Question text
-    cat = q.get("category", "")
-    prefix = f"[{cat}] " if cat else ""
     q_te = q["question_te"].strip()
-
-    # If bilingual English exists and fits within 300 chars, include it; otherwise use Telugu
     q_en = q.get("question_en", "").strip() if isinstance(q.get("question_en"), str) else ""
-    combined = f"{prefix}{q_te}\n\n{q_en}".strip() if q_en else f"{prefix}{q_te}".strip()
+
+    if q_en:
+        formatted_en = f"({q_en})" if not (q_en.startswith("(") and q_en.endswith(")")) else q_en
+        combined = f"{q_te}\n\n{formatted_en}".strip()
+    else:
+        combined = q_te
 
     if len(combined) <= 300:
         question_text = combined
     else:
-        # Fallback to pure Telugu with prefix
-        telugu_only = f"{prefix}{q_te}".strip()
-        question_text = telugu_only[:300]
+        if len(q_te) <= 260 and q_en:
+            avail = 300 - len(q_te) - 8
+            if avail > 20:
+                short_en = q_en[:avail].rstrip() + "...)"
+                question_text = f"{q_te}\n\n({short_en}"
+            else:
+                question_text = q_te
+        else:
+            question_text = q_te
+    question_text = question_text[:300].strip()
 
-    # Options
     options = []
+    letters = ["A. ", "B. ", "C. ", "D. "]
     opts_te = q["options_te"]
     opts_en = q.get("options_en", [])
     has_en = isinstance(opts_en, list) and len(opts_en) == 4
 
     for i in range(4):
+        prefix = letters[i]
         te_opt = opts_te[i].strip()
-        if has_en and opts_en[i].strip():
+        if te_opt.startswith(("A. ", "B. ", "C. ", "D. ", "A) ", "B) ", "C) ", "D) ")):
+            prefix = ""
+
+        if has_en and opts_en[i] and opts_en[i].strip():
             en_opt = opts_en[i].strip()
-            combo_opt = f"{te_opt} / {en_opt}"
+            if en_opt.startswith(("A. ", "B. ", "C. ", "D. ", "A) ", "B) ", "C) ", "D) ")):
+                en_opt = en_opt[3:].strip()
+            combo_opt = f"{prefix}{te_opt} / {en_opt}".strip()
             if len(combo_opt) <= 100:
                 options.append(combo_opt)
             else:
-                options.append(te_opt[:100])
+                te_prefixed = f"{prefix}{te_opt}".strip()
+                options.append(te_prefixed[:100])
         else:
-            options.append(te_opt[:100])
+            te_prefixed = f"{prefix}{te_opt}".strip()
+            options.append(te_prefixed[:100])
 
     answer_idx = int(q["correct_option_id"])
 
     # Explanation - must be <= 200 chars for Telegram Poll
     exp_te = q.get("explanation_te", "").strip()
-    explanation_text = f"వివరణ: {exp_te}"
+    if exp_te.startswith("వివరణ:"):
+        explanation_text = exp_te
+    else:
+        explanation_text = f"వివరణ: {exp_te}".strip()
+
     if len(explanation_text) > 200:
         explanation_text = explanation_text[:197] + "..."
 
