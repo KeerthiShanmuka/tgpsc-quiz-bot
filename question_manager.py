@@ -228,8 +228,17 @@ def format_poll_payload(q: Dict[str, Any]) -> Tuple[str, List[str], int, str]:
             if len(combo_opt) <= 100:
                 options.append(combo_opt)
             else:
-                te_prefixed = f"{prefix}{te_opt}".strip()
-                options.append(te_prefixed[:100])
+                # Balance lengths so BOTH Telugu and English are preserved
+                avail = 99 - len(prefix) - 3  # minus " / "
+                half = avail // 2
+                if len(en_opt) <= half:
+                    te_len = avail - len(en_opt)
+                    options.append(f"{prefix}{te_opt[:te_len].rstrip()} / {en_opt}")
+                elif len(te_opt) <= half:
+                    en_len = avail - len(te_opt)
+                    options.append(f"{prefix}{te_opt} / {en_opt[:en_len].rstrip()}")
+                else:
+                    options.append(f"{prefix}{te_opt[:half].rstrip()} / {en_opt[:half].rstrip()}")
         else:
             te_prefixed = f"{prefix}{te_opt}".strip()
             options.append(te_prefixed[:100])
