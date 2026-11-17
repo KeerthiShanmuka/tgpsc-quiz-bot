@@ -50,3 +50,30 @@ def test_format_poll_payload():
     assert correct_idx == q["correct_option_id"]
     assert len(explanation) <= 200
 
+def test_daily_14_batch_selection_and_order():
+    qb = QuestionBank()
+    batch = qb.get_daily_14_batch(set())
+    assert len(batch) == 14
+    for idx, (expected_cat, q) in enumerate(zip(CATEGORIES, batch)):
+        assert q["category"] == expected_cat, f"Slot {idx} category mismatch: expected {expected_cat}, got {q['category']}"
+
+def test_daily_14_rotation_and_no_repeats():
+    qb = QuestionBank()
+    day1_batch = qb.get_daily_14_batch(set())
+    posted = {q["id"] for q in day1_batch}
+    assert len(posted) == 14
+
+    day2_batch = qb.get_daily_14_batch(posted)
+    assert len(day2_batch) == 14
+    day2_ids = {q["id"] for q in day2_batch}
+
+    # No duplicate questions across days
+    assert posted.isdisjoint(day2_ids)
+
+    # Each subject progressed by 1
+    for q1, q2 in zip(day1_batch, day2_batch):
+        assert q1["category"] == q2["category"]
+        id1_num = int(q1["id"][2:])
+        id2_num = int(q2["id"][2:])
+        assert id2_num == id1_num + 1
+

@@ -75,13 +75,23 @@ async def handle_postquiz(message: Message, bot: Bot, qb: QuestionBank):
         )
 
         poll_id = poll_msg.poll.id if poll_msg.poll else None
-        await record_posted_question(q["id"], str(TARGET_CHAT_ID), poll_id=poll_id)
+        message_id = poll_msg.message_id
+        category = q.get("category", "General Studies")
+        await record_posted_question(
+            question_id=q["id"],
+            chat_id=str(TARGET_CHAT_ID),
+            subject=category,
+            poll_id=poll_id,
+            message_id=message_id,
+            status="success"
+        )
         if poll_id:
             await save_poll_metadata(poll_id, q["id"], str(TARGET_CHAT_ID), correct_id)
 
         await message.answer(
             f"✅ Successfully posted question *{q['id']}* to `{TARGET_CHAT_ID}`!\n"
-            f"Category: {q.get('category', 'General')}",
+            f"Category: {category}\n"
+            f"Message ID: `{message_id}`",
             parse_mode="Markdown"
         )
     except Exception as e:

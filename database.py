@@ -1,19 +1,23 @@
 import json
 import logging
 import os
+import re
 from datetime import datetime
 from typing import Optional, Set, Tuple, List, Dict, Any
 import aiosqlite
-from config import DB_PATH, POSTED_HISTORY_PATH, TZ
+from config import DB_PATH, POSTED_HISTORY_PATH, TZ, CATEGORIES
 
 log = logging.getLogger("tgpsc-quiz.database")
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS posted_questions (
     question_id TEXT PRIMARY KEY,
+    subject TEXT,
     posted_at TEXT NOT NULL,
     chat_id TEXT NOT NULL,
-    poll_id TEXT
+    poll_id TEXT,
+    message_id INTEGER,
+    status TEXT DEFAULT 'success'
 );
 
 CREATE TABLE IF NOT EXISTS polls (
@@ -59,6 +63,43 @@ CREATE TABLE IF NOT EXISTS settings (
 """
 
 
+def infer_subject_from_id(qid: str) -> str:
+    """Infer the 14-subject category from the question ID range."""
+    try:
+        num = int(re.sub(r"\D", "", qid))
+        if 1 <= num <= 143:
+            return "Telangana History"
+        elif 144 <= num <= 286:
+            return "Telangana Movement"
+        elif 287 <= num <= 429:
+            return "Telangana Geography"
+        elif 430 <= num <= 572:
+            return "Indian Polity"
+        elif 573 <= num <= 715:
+            return "Indian History"
+        elif 716 <= num <= 858:
+            return "Indian Geography"
+        elif 859 <= num <= 1001:
+            return "Indian Economy"
+        elif 1002 <= num <= 1144:
+            return "General Science"
+        elif 1145 <= num <= 1287:
+            return "Biology"
+        elif 1288 <= num <= 1430:
+            return "Physics"
+        elif 1431 <= num <= 1573:
+            return "Chemistry"
+        elif 1574 <= num <= 1716:
+            return "Current Affairs"
+        elif 1717 <= num <= 1858:
+            return "Telangana Culture"
+        elif 1859 <= num <= 2000:
+            return "Telangana Government Schemes"
+    except Exception:
+        pass
+    return "General Studies"
+
+
 async def init_db(db_path: str = DB_PATH) -> None:
     """Initialize database and schema with auto-migrations."""
     async with aiosqlite.connect(db_path) as db:
@@ -68,6 +109,12 @@ async def init_db(db_path: str = DB_PATH) -> None:
             cols = [row[1] for row in await cursor.fetchall()]
             if "poll_id" not in cols:
                 await db.execute("ALTER TABLE posted_questions ADD COLUMN poll_id TEXT")
+            if "subject" not in cols:
+                await db.execute("ALTER TABLE posted_questions ADD COLUMN subject TEXT")
+            if "message_id" not in cols:
+                await db.execute("ALTER TABLE posted_questions ADD COLUMN message_id INTEGER")
+            if "status" not in cols:
+                await db.execute("ALTER TABLE posted_questions ADD COLUMN status TEXT DEFAULT 'success'")
         await db.commit()
     log.info("Database initialized successfully at %s", db_path)
 
@@ -78,10 +125,13 @@ async def get_posted_ids(db_path: str = DB_PATH) -> Set[str]:
 
     # 1. From database
     if os.path.exists(db_path):
-        async with aiosqlite.connect(db_path) as db:
-            cur = await db.execute("SELECT question_id FROM posted_questions")
-            rows = await cur.fetchall()
-            posted.update(row[0] for row in rows)
+        try:
+            async with aiosqlite.connect(db_path) as db:
+                cur = await db.execute("SELECT question_id FROM posted_questions")
+                rows = await cur.fetchall()
+                posted.update(row[0] for row in rows)
+        except Exception as e:
+            log.warning("Could not read posted IDs from DB: %s", e)
 
     # 2. From persistent JSON history file (for GitHub Actions sync)
     if os.path.exists(POSTED_HISTORY_PATH):
@@ -90,53 +140,157 @@ async def get_posted_ids(db_path: str = DB_PATH) -> Set[str]:
                 history_data = json.load(f)
                 if isinstance(history_data, list):
                     posted.update(history_data)
-                elif isinstance(history_data, dict) and "posted_ids" in history_data:
-                    posted.update(history_data["posted_ids"])
+                elif isinstance(history_data, dict):
+                    if "posted_ids" in history_data:
+                        posted.update(history_data["posted_ids"])
+                    if "history" in history_data:
+                        for entry in history_data["history"]:
+                            if isinstance(entry, dict) and "question_id" in entry:
+                                posted.add(entry["question_id"])
         except Exception as e:
             log.warning("Could not read posted history file: %s", e)
 
     return posted
 
 
+async def get_posted_subjects_today(today_str: Optional[str] = None) -> Set[str]:
+    """Return set of subject names posted today (Asia/Kolkata date YYYY-MM-DD)."""
+    if not today_str:
+        today_str = datetime.now(TZ).strftime("%Y-%m-%d")
+    posted_subjects = set()
+
+    if os.path.exists(DB_PATH):
+        try:
+            async with aiosqlite.connect(DB_PATH) as db:
+                cur = await db.execute(
+                    "SELECT subject FROM posted_questions WHERE posted_at LIKE ? AND status = 'success'",
+                    (f"{today_str}%",)
+                )
+                rows = await cur.fetchall()
+                for r in rows:
+                    if r[0]:
+                        posted_subjects.add(r[0])
+        except Exception as e:
+            log.warning("Could not check today's posted subjects in SQLite: %s", e)
+
+    if os.path.exists(POSTED_HISTORY_PATH):
+        try:
+            with open(POSTED_HISTORY_PATH, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                history = data.get("history", []) if isinstance(data, dict) else []
+                for entry in history:
+                    if (
+                        isinstance(entry, dict)
+                        and entry.get("publication_date", "").startswith(today_str)
+                        and entry.get("publication_status") == "success"
+                    ):
+                        subj = entry.get("subject")
+                        if subj:
+                            posted_subjects.add(subj)
+        except Exception as e:
+            log.warning("Could not check today's posted subjects in JSON: %s", e)
+
+    return posted_subjects
+
+
 async def record_posted_question(
     question_id: str,
     chat_id: str,
+    subject: Optional[str] = None,
     poll_id: Optional[str] = None,
+    message_id: Optional[int] = None,
+    status: str = "success",
     db_path: str = DB_PATH,
     history_path: str = POSTED_HISTORY_PATH
 ) -> None:
-    """Record a question as posted in both DB and persistent JSON history."""
+    """
+    Record a question as posted in both SQLite DB and persistent JSON history.
+    Tracks: Question ID, Subject, Publication date, Telegram message ID, Publication status.
+    """
     now_iso = datetime.now(TZ).isoformat()
+    resolved_subject = subject or infer_subject_from_id(question_id)
 
-    # Record in SQLite
+    # 1. Record in SQLite
     async with aiosqlite.connect(db_path) as db:
         await db.execute(
             """
-            INSERT OR REPLACE INTO posted_questions (question_id, posted_at, chat_id, poll_id)
-            VALUES (?, ?, ?, ?)
+            INSERT OR REPLACE INTO posted_questions (
+                question_id, subject, posted_at, chat_id, poll_id, message_id, status
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
-            (question_id, now_iso, str(chat_id), poll_id)
+            (question_id, resolved_subject, now_iso, str(chat_id), poll_id, message_id, status)
         )
         await db.commit()
 
-    # Record in persistent JSON file
+    # 2. Record in persistent JSON file
     os.makedirs(os.path.dirname(os.path.abspath(history_path)), exist_ok=True)
-    history = []
+    posted_ids_list: List[str] = []
+    detailed_history: List[Dict[str, Any]] = []
+    by_subject: Dict[str, List[str]] = {c: [] for c in CATEGORIES}
+
     if os.path.exists(history_path):
         try:
             with open(history_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 if isinstance(data, list):
-                    history = data
-                elif isinstance(data, dict) and "posted_ids" in data:
-                    history = data["posted_ids"]
-        except Exception:
-            history = []
+                    posted_ids_list = data
+                elif isinstance(data, dict):
+                    posted_ids_list = list(data.get("posted_ids", []))
+                    detailed_history = list(data.get("history", []))
+                    raw_by_sub = data.get("by_subject", {})
+                    if isinstance(raw_by_sub, dict):
+                        for k, v in raw_by_sub.items():
+                            by_subject[k] = list(v)
+        except Exception as e:
+            log.warning("Could not parse history file: %s", e)
 
-    if question_id not in history:
-        history.append(question_id)
-        with open(history_path, "w", encoding="utf-8") as f:
-            json.dump({"posted_ids": history, "last_updated": now_iso}, f, indent=2)
+    # Reconcile existing legacy posted_ids into detailed_history & by_subject
+    existing_ids_in_hist = {h.get("question_id") for h in detailed_history if isinstance(h, dict)}
+    for old_id in posted_ids_list:
+        if old_id not in existing_ids_in_hist:
+            inferred = infer_subject_from_id(old_id)
+            detailed_history.append({
+                "question_id": old_id,
+                "subject": inferred,
+                "publication_date": now_iso,
+                "telegram_message_id": None,
+                "poll_id": None,
+                "publication_status": "success"
+            })
+            if old_id not in by_subject.setdefault(inferred, []):
+                by_subject[inferred].append(old_id)
+
+    if question_id not in posted_ids_list:
+        posted_ids_list.append(question_id)
+
+    # Insert or update detailed entry
+    new_entry = {
+        "question_id": question_id,
+        "subject": resolved_subject,
+        "publication_date": now_iso,
+        "telegram_message_id": message_id,
+        "poll_id": poll_id,
+        "publication_status": status
+    }
+    found_idx = next((i for i, h in enumerate(detailed_history) if h.get("question_id") == question_id), -1)
+    if found_idx >= 0:
+        detailed_history[found_idx] = new_entry
+    else:
+        detailed_history.append(new_entry)
+
+    if resolved_subject not in by_subject:
+        by_subject[resolved_subject] = []
+    if question_id not in by_subject[resolved_subject]:
+        by_subject[resolved_subject].append(question_id)
+
+    payload = {
+        "posted_ids": posted_ids_list,
+        "history": detailed_history,
+        "by_subject": by_subject,
+        "last_updated": now_iso
+    }
+    with open(history_path, "w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2, ensure_ascii=False)
 
 
 async def save_poll_metadata(

@@ -4,7 +4,7 @@ import os
 import re
 from typing import Dict, List, Optional, Set, Tuple, Any
 
-from config import QUESTIONS_PATH
+from config import QUESTIONS_PATH, CATEGORIES
 
 log = logging.getLogger("tgpsc-quiz.questions")
 
@@ -152,6 +152,39 @@ class QuestionBank:
         candidates = self.by_category.get(category, self.questions) if category else self.questions
         unposted = [q for q in candidates if q["id"] not in posted_ids]
         return unposted[:count]
+
+    def get_next_for_category(self, category: str, posted_ids: Set[str]) -> Optional[Dict[str, Any]]:
+        """Retrieve the next single unposted question for a specific subject."""
+        candidates = self.by_category.get(category, [])
+        for q in candidates:
+            if q["id"] not in posted_ids:
+                return q
+        return None
+
+    def get_next_for_slot(self, slot_index: int, posted_ids: Set[str]) -> Optional[Dict[str, Any]]:
+        """Retrieve the next question designated for a scheduled daily slot (0 to 13)."""
+        if 0 <= slot_index < len(CATEGORIES):
+            cat = CATEGORIES[slot_index]
+            return self.get_next_for_category(cat, posted_ids)
+        return None
+
+    def get_daily_14_batch(self, posted_ids: Set[str]) -> List[Dict[str, Any]]:
+        """
+        Select exactly 1 unposted question from each of the 14 subjects in order.
+        Guarantees:
+        - 1 question per category.
+        - Preserves strict category sequence (Telangana History to Schemes).
+        - Never selects 2 questions from the same subject.
+        - Never repeats previously posted question IDs.
+        """
+        batch = []
+        for cat in CATEGORIES:
+            q = self.get_next_for_category(cat, posted_ids)
+            if q:
+                batch.append(q)
+            else:
+                log.warning("Subject bank exhausted for category: %s", cat)
+        return batch
 
     def stats(self, posted_ids: Set[str]) -> Dict[str, Any]:
         """Generate breakdown statistics."""

@@ -4,7 +4,82 @@
     "TG0002",
     "TG0003",
     "TG0004",
-    "TG0005"
+    "TG0005",
+    "TG0144"
   ],
-  "last_updated": "2026-11-17T18:13:43.198506+05:30"
+  "history": [
+    {
+      "question_id": "TG0001",
+      "subject": "Telangana History",
+      "publication_date": "2026-11-17T18:28:13.530703+05:30",
+      "telegram_message_id": null,
+      "poll_id": null,
+      "publication_status": "success"
+    },
+    {
+      "question_id": "TG0002",
+      "subject": "Telangana History",
+      "publication_date": "2026-11-17T18:28:13.552252+05:30",
+      "telegram_message_id": null,
+      "poll_id": null,
+      "publication_status": "success"
+    },
+    {
+      "question_id": "TG0003",
+      "subject": "Telangana History",
+      "publication_date": "2026-11-17T18:28:13.573283+05:30",
+      "telegram_message_id": null,
+      "poll_id": null,
+      "publication_status": "success"
+    },
+    {
+      "question_id": "TG0004",
+      "subject": "Telangana History",
+      "publication_date": "2026-11-17T18:28:13.592325+05:30",
+      "telegram_message_id": null,
+      "poll_id": null,
+      "publication_status": "success"
+    },
+    {
+      "question_id": "TG0005",
+      "subject": "Telangana History",
+      "publication_date": "2026-11-17T18:28:13.613422+05:30",
+      "telegram_message_id": null,
+      "poll_id": null,
+      "publication_status": "success"
+    },
+    {
+      "question_id": "TG0144",
+      "subject": "Telangana Movement",
+      "publication_date": "2026-11-17T18:28:45.373382+05:30",
+      "telegram_message_id": 3610,
+      "poll_id": "6334585881197806939",
+      "publication_status": "success"
+    }
+  ],
+  "by_subject": {
+    "Telangana History": [
+      "TG0001",
+      "TG0002",
+      "TG0003",
+      "TG0004",
+      "TG0005"
+    ],
+    "Telangana Movement": [
+      "TG0144"
+    ],
+    "Telangana Geography": [],
+    "Indian Polity": [],
+    "Indian History": [],
+    "Indian Geography": [],
+    "Indian Economy": [],
+    "General Science": [],
+    "Biology": [],
+    "Physics": [],
+    "Chemistry": [],
+    "Current Affairs": [],
+    "Telangana Culture": [],
+    "Telangana Government Schemes": []
+  },
+  "last_updated": "2026-11-17T18:28:45.373382+05:30"
 }

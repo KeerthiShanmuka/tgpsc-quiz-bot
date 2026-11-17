@@ -4,6 +4,7 @@ from aiogram.enums import PollType
 from aiogram.filters import Command, CommandStart
 from aiogram.types import Message
 
+from config import SCHEDULED_SLOTS
 from database import (
     register_user,
     get_user_score,
@@ -161,15 +162,18 @@ async def handle_daily(message: Message, qb: QuestionBank):
     posted_ids = await get_posted_ids()
     stats = qb.stats(posted_ids)
 
+    schedule_lines = []
+    for slot in SCHEDULED_SLOTS:
+        schedule_lines.append(f"⏰ *{slot['time']}* — {slot['category']}")
+
     text = (
-        "📅 *TGPSC డైలీ క్విజ్ షెడ్యూల్ (Daily Schedule)*\n\n"
-        "⏰ *సమయాలు (Asia/Kolkata):*\n"
-        "🌅 07:00, 07:30, 08:00, 08:30, 09:00\n"
-        "🌞 09:30, 10:00, 10:30, 11:00, 11:30\n\n"
-        f"📊 *మొత్తం ప్రశ్నల నిధి:* {stats['total_questions']}\n"
+        "📅 *TGPSC డైలీ 14-సబ్జెక్ట్ క్విజ్ షెడ్యూల్ (Daily Schedule)*\n\n"
+        "ప్రతిరోజూ 14 విభిన్న సబ్జెక్టుల నుండి ఖచ్చితంగా 14 ప్రశ్నలు (Asia/Kolkata):\n\n"
+        + "\n".join(schedule_lines)
+        + f"\n\n📊 *మొత్తం ప్రశ్నల నిధి:* {stats['total_questions']}\n"
         f"📤 *ఇప్పటివరకు పోస్ట్ చేసినవి:* {stats['posted_count']}\n"
         f"📥 *మిగిలి ఉన్న ప్రశ్నలు:* {stats['remaining']}\n\n"
-        "📢 రోజూ 10 ప్రశ్నలు చానల్ లో స్వయంచాలకంగా ప్రసారం చేయబడతాయి!"
+        "📢 రోజూ 14 ప్రశ్నలు చానల్ లో స్వయంచాలకంగా ప్రసారం చేయబడతాయి!"
     )
     await message.answer(text, parse_mode="Markdown")
 
