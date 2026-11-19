@@ -7,7 +7,8 @@
     "TG0005",
     "TG0144",
     "TG0006",
-    "TG0007"
+    "TG0007",
+    "TG1145"
   ],
   "history": [
     {
@@ -73,6 +74,14 @@
       "telegram_message_id": 3614,
       "poll_id": "6336837681011492276",
       "publication_status": "success"
+    },
+    {
+      "question_id": "TG1145",
+      "subject": "Biology",
+      "publication_date": "2026-11-19T14:50:58.622948+05:30",
+      "telegram_message_id": 3624,
+      "poll_id": "6339043554739881119",
+      "publication_status": "success"
     }
   ],
   "by_subject": {
@@ -94,12 +103,14 @@
     "Indian Geography": [],
     "Indian Economy": [],
     "General Science": [],
-    "Biology": [],
+    "Biology": [
+      "TG1145"
+    ],
     "Physics": [],
     "Chemistry": [],
     "Current Affairs": [],
     "Telangana Culture": [],
     "Telangana Government Schemes": []
   },
-  "last_updated": "2026-11-19T00:29:32.831432+05:30"
+  "last_updated": "2026-11-19T14:50:58.622948+05:30"
 }
