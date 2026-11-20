@@ -10,7 +10,8 @@
     "TG0007",
     "TG1145",
     "TG0008",
-    "TG1146"
+    "TG1146",
+    "TG1859"
   ],
   "history": [
     {
@@ -100,6 +101,14 @@
       "telegram_message_id": 3631,
       "poll_id": "6052879822361724209",
       "publication_status": "success"
+    },
+    {
+      "question_id": "TG1859",
+      "subject": "Telangana Government Schemes",
+      "publication_date": "2026-11-20T23:27:22.372901+05:30",
+      "telegram_message_id": 3635,
+      "poll_id": "6052879822361724273",
+      "publication_status": "success"
     }
   ],
   "by_subject": {
@@ -130,7 +139,9 @@
     "Chemistry": [],
     "Current Affairs": [],
     "Telangana Culture": [],
-    "Telangana Government Schemes": []
+    "Telangana Government Schemes": [
+      "TG1859"
+    ]
   },
-  "last_updated": "2026-11-20T14:33:06.926574+05:30"
+  "last_updated": "2026-11-20T23:27:22.372901+05:30"
 }
