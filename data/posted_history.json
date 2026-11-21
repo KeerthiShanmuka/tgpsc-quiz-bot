@@ -12,7 +12,8 @@
     "TG0008",
     "TG1146",
     "TG1859",
-    "TG1002"
+    "TG1002",
+    "TG1860"
   ],
   "history": [
     {
@@ -118,6 +119,14 @@
       "telegram_message_id": 3637,
       "poll_id": "6055131622175409617",
       "publication_status": "success"
+    },
+    {
+      "question_id": "TG1860",
+      "subject": "Telangana Government Schemes",
+      "publication_date": "2026-11-21T22:24:57.502655+05:30",
+      "telegram_message_id": 3644,
+      "poll_id": "6055131622175409695",
+      "publication_status": "success"
     }
   ],
   "by_subject": {
@@ -151,8 +160,9 @@
     "Current Affairs": [],
     "Telangana Culture": [],
     "Telangana Government Schemes": [
-      "TG1859"
+      "TG1859",
+      "TG1860"
     ]
   },
-  "last_updated": "2026-11-21T14:12:00.989897+05:30"
+  "last_updated": "2026-11-21T22:24:57.502655+05:30"
 }
