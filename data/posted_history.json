@@ -13,7 +13,8 @@
     "TG1146",
     "TG1859",
     "TG1002",
-    "TG1860"
+    "TG1860",
+    "TG1003"
   ],
   "history": [
     {
@@ -127,6 +128,14 @@
       "telegram_message_id": 3644,
       "poll_id": "6055131622175409695",
       "publication_status": "success"
+    },
+    {
+      "question_id": "TG1003",
+      "subject": "General Science",
+      "publication_date": "2026-11-22T14:11:54.684425+05:30",
+      "telegram_message_id": 3660,
+      "poll_id": "6059953307080721897",
+      "publication_status": "success"
     }
   ],
   "by_subject": {
@@ -149,7 +158,8 @@
     "Indian Geography": [],
     "Indian Economy": [],
     "General Science": [
-      "TG1002"
+      "TG1002",
+      "TG1003"
     ],
     "Biology": [
       "TG1145",
@@ -164,5 +174,5 @@
       "TG1860"
     ]
   },
-  "last_updated": "2026-11-21T22:24:57.502655+05:30"
+  "last_updated": "2026-11-22T14:11:54.684425+05:30"
 }
