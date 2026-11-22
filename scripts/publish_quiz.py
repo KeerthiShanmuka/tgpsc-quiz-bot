@@ -9,7 +9,7 @@ import asyncio
 import logging
 import os
 import sys
-from typing import Optional
+from typing import Optional, List
 
 # Ensure project root is in sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -126,6 +126,34 @@ def determine_auto_slot() -> int:
     return best_slot
 
 
+def get_due_categories_today(now: Optional[datetime] = None) -> List[str]:
+    """
+    Return all categories whose scheduled posting time has arrived or passed today.
+    If the current time is 20:00 IST or later, all 14 categories are due for the day.
+    Guarantees no subject is left behind if a previous hourly trigger was delayed or dropped.
+    """
+    if now is None:
+        now = datetime.now(TZ)
+    current_minutes = now.hour * 60 + now.minute
+
+    # If it's 20:00 IST or later, all 14 slots for today are due
+    if now.hour >= 20:
+        return list(CATEGORIES)
+
+    due = []
+    for i, (h, m) in enumerate(POST_TIMES[:len(CATEGORIES)]):
+        slot_minutes = h * 60 + m
+        # Due if slot time arrived or passed (with 10-minute grace before slot)
+        if current_minutes >= (slot_minutes - 10):
+            due.append(CATEGORIES[i])
+
+    # If early morning before 07:00 IST, none are due yet for the new day
+    if not due and now.hour < 7:
+        due = []
+
+    return due
+
+
 async def run_publisher(
     count: int = 1,
     target_chat: Optional[str] = None,
@@ -180,28 +208,27 @@ async def run_publisher(
         else:
             log.warning("No unposted questions in category '%s'.", category)
     elif auto_slot:
-        best_slot = determine_auto_slot()
-        cat = CATEGORIES[best_slot]
-        log.info("Auto-slot resolved to Slot %d: '%s' based on %s time.", best_slot, cat, TZ)
+        due_categories = get_due_categories_today()
+        now_str = datetime.now(TZ).strftime("%H:%M")
+        log.info("Auto-slot check at %s IST: %d subject(s) are due today up to this hour.", now_str, len(due_categories))
 
-        # Check if already posted today
-        if cat in posted_today and not force:
-            log.info("Subject '%s' already published today. Searching for next unpublished subject today...", cat)
-            # Find next subject that has not been posted today
-            for c in CATEGORIES:
-                if c not in posted_today:
-                    cat = c
-                    log.info("Found unpublished subject for today: '%s'", cat)
-                    break
+        # Identify all subjects that are due but have NOT yet been posted today
+        missing_due = [cat for cat in due_categories if cat not in posted_today] if not force else due_categories
+
+        if not missing_due:
+            log.info("All %d due subject(s) up to %s IST have already been published today.", len(due_categories), now_str)
+            if datetime.now(TZ).hour >= 20:
+                log.info("All 14 daily subjects are completed for today!")
+            return 0
+
+        log.info("Found %d pending due subject(s) to publish today: %s", len(missing_due), missing_due)
+        for cat in missing_due:
+            q = qb.get_next_for_category(cat, posted_ids)
+            if q:
+                questions_to_post.append(q)
+                posted_ids.add(q["id"])
             else:
-                log.info("All 14 subjects have already been published today! Nothing to do.")
-                return 0
-
-        q = qb.get_next_for_category(cat, posted_ids)
-        if q:
-            questions_to_post = [q]
-        else:
-            log.warning("Subject bank exhausted for category: %s", cat)
+                log.warning("Subject bank exhausted for category: %s", cat)
     else:
         # Fallback to general unposted questions
         questions_to_post = qb.get_unposted(posted_ids, count=count)

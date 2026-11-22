@@ -2,22 +2,30 @@ name: Daily TGPSC Quiz Publisher
 
 on:
   schedule:
-    # Exactly 14 daily slots in Asia/Kolkata (IST = UTC + 5:30):
-    # Slot  0: 07:00 IST -> 01:30 UTC - Telangana History
-    # Slot  1: 08:00 IST -> 02:30 UTC - Telangana Movement
-    # Slot  2: 09:00 IST -> 03:30 UTC - Telangana Geography
-    # Slot  3: 10:00 IST -> 04:30 UTC - Indian Polity
-    # Slot  4: 11:00 IST -> 05:30 UTC - Indian History
-    # Slot  5: 12:00 IST -> 06:30 UTC - Indian Geography
-    # Slot  6: 13:00 IST -> 07:30 UTC - Indian Economy
-    # Slot  7: 14:00 IST -> 08:30 UTC - General Science
-    # Slot  8: 15:00 IST -> 09:30 UTC - Biology
-    # Slot  9: 16:00 IST -> 10:30 UTC - Physics
-    # Slot 10: 17:00 IST -> 11:30 UTC - Chemistry
-    # Slot 11: 18:00 IST -> 12:30 UTC - Current Affairs
-    # Slot 12: 19:00 IST -> 13:30 UTC - Telangana Culture
-    # Slot 13: 20:00 IST -> 14:30 UTC - Telangana Government Schemes
-    - cron: '30 1,2,3,4,5,6,7,8,9,10,11,12,13,14 * * *'
+    # 14 hourly slots in Asia/Kolkata (IST = UTC + 5:30):
+    # Scheduled at :20 past each hour in UTC to avoid peak :00 and :30 congestion delays:
+    # ~06:50 IST (01:20 UTC) - Slot 0: Telangana History
+    # ~07:50 IST (02:20 UTC) - Slot 1: Telangana Movement
+    # ~08:50 IST (03:20 UTC) - Slot 2: Telangana Geography
+    # ~09:50 IST (04:20 UTC) - Slot 3: Indian Polity
+    # ~10:50 IST (05:20 UTC) - Slot 4: Indian History
+    # ~11:50 IST (06:20 UTC) - Slot 5: Indian Geography
+    # ~12:50 IST (07:20 UTC) - Slot 6: Indian Economy
+    # ~13:50 IST (08:20 UTC) - Slot 7: General Science
+    # ~14:50 IST (09:20 UTC) - Slot 8: Biology
+    # ~15:50 IST (10:20 UTC) - Slot 9: Physics
+    # ~16:50 IST (11:20 UTC) - Slot 10: Chemistry
+    # ~17:50 IST (12:20 UTC) - Slot 11: Current Affairs
+    # ~18:50 IST (13:20 UTC) - Slot 12: Telangana Culture
+    # ~19:50 IST (14:20 UTC) - Slot 13: Telangana Government Schemes
+    - cron: '20 1,2,3,4,5,6,7,8,9,10,11,12,13,14 * * *'
+    # Dedicated catch-up sweeps to guarantee 100% completion even if GitHub skips daytime crons:
+    # Afternoon sweep: 15:15 IST (09:45 UTC)
+    - cron: '45 9 * * *'
+    # Evening sweep: 20:45 IST (15:15 UTC)
+    - cron: '15 15 * * *'
+    # Night final safety check: 22:45 IST (17:15 UTC)
+    - cron: '15 17 * * *'
   workflow_dispatch:
     inputs:
       daily_14:
