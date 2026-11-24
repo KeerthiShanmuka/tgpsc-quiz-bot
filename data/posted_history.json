@@ -38,7 +38,14 @@
     "TG1004",
     "TG0011",
     "TG0147",
-    "TG0289"
+    "TG0289",
+    "TG0432",
+    "TG0575",
+    "TG0718",
+    "TG0861",
+    "TG1005",
+    "TG1148",
+    "TG1289"
   ],
   "history": [
     {
@@ -352,6 +359,62 @@
       "telegram_message_id": 3697,
       "poll_id": "6064542483931464906",
       "publication_status": "success"
+    },
+    {
+      "question_id": "TG0432",
+      "subject": "Indian Polity",
+      "publication_date": "2026-11-24T16:36:58.440692+05:30",
+      "telegram_message_id": 3698,
+      "poll_id": "6064542483931464928",
+      "publication_status": "success"
+    },
+    {
+      "question_id": "TG0575",
+      "subject": "Indian History",
+      "publication_date": "2026-11-24T16:37:01.777933+05:30",
+      "telegram_message_id": 3699,
+      "poll_id": "6064542483931464929",
+      "publication_status": "success"
+    },
+    {
+      "question_id": "TG0718",
+      "subject": "Indian Geography",
+      "publication_date": "2026-11-24T16:37:05.106485+05:30",
+      "telegram_message_id": 3700,
+      "poll_id": "6064542483931464930",
+      "publication_status": "success"
+    },
+    {
+      "question_id": "TG0861",
+      "subject": "Indian Economy",
+      "publication_date": "2026-11-24T16:37:08.457239+05:30",
+      "telegram_message_id": 3701,
+      "poll_id": "6064542483931464931",
+      "publication_status": "success"
+    },
+    {
+      "question_id": "TG1005",
+      "subject": "General Science",
+      "publication_date": "2026-11-24T16:37:11.782961+05:30",
+      "telegram_message_id": 3702,
+      "poll_id": "6064542483931464932",
+      "publication_status": "success"
+    },
+    {
+      "question_id": "TG1148",
+      "subject": "Biology",
+      "publication_date": "2026-11-24T16:37:15.188341+05:30",
+      "telegram_message_id": 3703,
+      "poll_id": "6064542483931464933",
+      "publication_status": "success"
+    },
+    {
+      "question_id": "TG1289",
+      "subject": "Physics",
+      "publication_date": "2026-11-24T16:37:18.624189+05:30",
+      "telegram_message_id": 3704,
+      "poll_id": "6064542483931464934",
+      "publication_status": "success"
     }
   ],
   "by_subject": {
@@ -381,32 +444,39 @@
     ],
     "Indian Polity": [
       "TG0430",
-      "TG0431"
+      "TG0431",
+      "TG0432"
     ],
     "Indian History": [
       "TG0573",
-      "TG0574"
+      "TG0574",
+      "TG0575"
     ],
     "Indian Geography": [
       "TG0716",
-      "TG0717"
+      "TG0717",
+      "TG0718"
     ],
     "Indian Economy": [
       "TG0859",
-      "TG0860"
+      "TG0860",
+      "TG0861"
     ],
     "General Science": [
       "TG1002",
       "TG1003",
-      "TG1004"
+      "TG1004",
+      "TG1005"
     ],
     "Biology": [
       "TG1145",
       "TG1146",
-      "TG1147"
+      "TG1147",
+      "TG1148"
     ],
     "Physics": [
-      "TG1288"
+      "TG1288",
+      "TG1289"
     ],
     "Chemistry": [
       "TG1431"
@@ -423,5 +493,5 @@
       "TG1861"
     ]
   },
-  "last_updated": "2026-11-24T08:50:38.835777+05:30"
+  "last_updated": "2026-11-24T16:37:18.624189+05:30"
 }
