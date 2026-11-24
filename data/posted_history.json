@@ -35,7 +35,8 @@
     "TG0574",
     "TG0717",
     "TG0860",
-    "TG1004"
+    "TG1004",
+    "TG0011"
   ],
   "history": [
     {
@@ -325,6 +326,14 @@
       "telegram_message_id": 3689,
       "poll_id": "6062290684117779822",
       "publication_status": "success"
+    },
+    {
+      "question_id": "TG0011",
+      "subject": "Telangana History",
+      "publication_date": "2026-11-24T07:44:52.454544+05:30",
+      "telegram_message_id": 3695,
+      "poll_id": "6064542483931464902",
+      "publication_status": "success"
     }
   ],
   "by_subject": {
@@ -338,7 +347,8 @@
       "TG0007",
       "TG0008",
       "TG0009",
-      "TG0010"
+      "TG0010",
+      "TG0011"
     ],
     "Telangana Movement": [
       "TG0144",
@@ -393,5 +403,5 @@
       "TG1861"
     ]
   },
-  "last_updated": "2026-11-23T14:44:14.826883+05:30"
+  "last_updated": "2026-11-24T07:44:52.454544+05:30"
 }
