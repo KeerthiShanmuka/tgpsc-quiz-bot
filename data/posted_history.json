@@ -36,7 +36,9 @@
     "TG0717",
     "TG0860",
     "TG1004",
-    "TG0011"
+    "TG0011",
+    "TG0147",
+    "TG0289"
   ],
   "history": [
     {
@@ -334,6 +336,22 @@
       "telegram_message_id": 3695,
       "poll_id": "6064542483931464902",
       "publication_status": "success"
+    },
+    {
+      "question_id": "TG0147",
+      "subject": "Telangana Movement",
+      "publication_date": "2026-11-24T08:50:35.456012+05:30",
+      "telegram_message_id": 3696,
+      "poll_id": "6064542483931464905",
+      "publication_status": "success"
+    },
+    {
+      "question_id": "TG0289",
+      "subject": "Telangana Geography",
+      "publication_date": "2026-11-24T08:50:38.835777+05:30",
+      "telegram_message_id": 3697,
+      "poll_id": "6064542483931464906",
+      "publication_status": "success"
     }
   ],
   "by_subject": {
@@ -353,11 +371,13 @@
     "Telangana Movement": [
       "TG0144",
       "TG0145",
-      "TG0146"
+      "TG0146",
+      "TG0147"
     ],
     "Telangana Geography": [
       "TG0287",
-      "TG0288"
+      "TG0288",
+      "TG0289"
     ],
     "Indian Polity": [
       "TG0430",
@@ -403,5 +423,5 @@
       "TG1861"
     ]
   },
-  "last_updated": "2026-11-24T07:44:52.454544+05:30"
+  "last_updated": "2026-11-24T08:50:38.835777+05:30"
 }
