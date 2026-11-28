@@ -80,7 +80,13 @@
     "TG0579",
     "TG0722",
     "TG0865",
-    "TG1009"
+    "TG1009",
+    "TG1152",
+    "TG1290",
+    "TG1432",
+    "TG1575",
+    "TG1718",
+    "TG1862"
   ],
   "history": [
     {
@@ -730,6 +736,54 @@
       "telegram_message_id": 3768,
       "poll_id": "6077933101038699391",
       "publication_status": "success"
+    },
+    {
+      "question_id": "TG1152",
+      "subject": "Biology",
+      "publication_date": "2026-11-28T23:09:08.418024+05:30",
+      "telegram_message_id": 3769,
+      "poll_id": "6077933101038699410",
+      "publication_status": "success"
+    },
+    {
+      "question_id": "TG1290",
+      "subject": "Physics",
+      "publication_date": "2026-11-28T23:09:11.842837+05:30",
+      "telegram_message_id": 3770,
+      "poll_id": "6077933101038699411",
+      "publication_status": "success"
+    },
+    {
+      "question_id": "TG1432",
+      "subject": "Chemistry",
+      "publication_date": "2026-11-28T23:09:15.201427+05:30",
+      "telegram_message_id": 3771,
+      "poll_id": "6077933101038699412",
+      "publication_status": "success"
+    },
+    {
+      "question_id": "TG1575",
+      "subject": "Current Affairs",
+      "publication_date": "2026-11-28T23:09:18.645566+05:30",
+      "telegram_message_id": 3772,
+      "poll_id": "6077933101038699413",
+      "publication_status": "success"
+    },
+    {
+      "question_id": "TG1718",
+      "subject": "Telangana Culture",
+      "publication_date": "2026-11-28T23:09:22.054614+05:30",
+      "telegram_message_id": 3773,
+      "poll_id": "6077933101038699414",
+      "publication_status": "success"
+    },
+    {
+      "question_id": "TG1862",
+      "subject": "Telangana Government Schemes",
+      "publication_date": "2026-11-28T23:09:25.441593+05:30",
+      "telegram_message_id": 3774,
+      "poll_id": "6077933101038699415",
+      "publication_status": "success"
     }
   ],
   "by_subject": {
@@ -822,26 +876,32 @@
       "TG1148",
       "TG1149",
       "TG1150",
-      "TG1151"
+      "TG1151",
+      "TG1152"
     ],
     "Physics": [
       "TG1288",
-      "TG1289"
+      "TG1289",
+      "TG1290"
     ],
     "Chemistry": [
-      "TG1431"
+      "TG1431",
+      "TG1432"
     ],
     "Current Affairs": [
-      "TG1574"
+      "TG1574",
+      "TG1575"
     ],
     "Telangana Culture": [
-      "TG1717"
+      "TG1717",
+      "TG1718"
     ],
     "Telangana Government Schemes": [
       "TG1859",
       "TG1860",
-      "TG1861"
+      "TG1861",
+      "TG1862"
     ]
   },
-  "last_updated": "2026-11-28T14:28:26.494605+05:30"
+  "last_updated": "2026-11-28T23:09:25.441593+05:30"
 }
